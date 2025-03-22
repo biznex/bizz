@@ -309,7 +309,7 @@ export default function Page() {
           router.push("/complete-profile-business"); 
         }}
       >
-        Register Business
+        Register a Business
       </button>
 
 
@@ -458,9 +458,12 @@ export default function Page() {
       {/* Register Button */}
       <button
         className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition"
-        onClick={handleRegister}
+        onClick={() => {
+          handleRegister(); 
+          router.push("/complete-profile-job"); 
+        }}
       >
-        Register
+        Register for Job Aspirant
       </button>
 
       {/* Sign in with Google */}
@@ -473,13 +476,6 @@ export default function Page() {
     </div>
   </div>
 )}
-
-
-
-
-      
-
-
 
 
     </div>
