@@ -433,24 +433,24 @@ export default function Page() {
           </span>
         </div>
 
-        {/* Confirm Password Field */}
-        <div className="relative w-full md:w-1/2">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirm Password"
-            className="w-full p-2 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          {/* Toggle Eye Icon */}
-          <span
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          >
-            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </span>
+          {/* Confirm Password Field */}
+          <div className="relative w-full md:w-1/2">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              className="w-full p-2 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            {/* Toggle Eye Icon */}
+            <span
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </span>
+          </div>
         </div>
-      </div>
 
       {/* Error Messages */}
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
