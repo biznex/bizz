@@ -44,23 +44,48 @@ export default function CompleteProfile({ userType, authMethod }) {
               placeholder="Business Name"
             />
 
-            {/* Business Category Dropdown (Fixed) */}
-            <select
-              className="w-full px-3 py-2 border border-white bg-transparent text-white rounded-md focus:outline-none"
-              value={businessCategory}
-              onChange={(e) => setBusinessCategory(e.target.value)}
-              defaultValue="" 
-            >
-              <option value="" disabled className="bg-black">
-                Select Business Category
-              </option>
-              <option value="Retail & Ecommerce" className="bg-black">Retail & Ecommerce</option>
-              <option value="Education" className="bg-black">Education</option>
-              <option value="Consultation" className="bg-black">Consultation</option>
-              <option value="Services" className="bg-black">Services</option>
-              <option value="Food" className="bg-black">Food</option>
-              <option value="Other" className="bg-black">Other</option>
-            </select>
+{/* Business Category Dropdown with Custom Arrow */}
+<div className="relative">
+  <select
+    className="w-full px-3 py-2 border border-white bg-transparent text-white rounded-md focus:outline-none appearance-none pr-10"
+    value={businessCategory}
+    onChange={(e) => setBusinessCategory(e.target.value)}
+  >
+    <option value="" disabled hidden>
+      Select Business Category
+    </option>
+    <option value="Retail & Ecommerce" className="bg-black text-white">
+      Retail & Ecommerce
+    </option>
+    <option value="Education" className="bg-black text-white">Education</option>
+    <option value="Consultation" className="bg-black text-white">
+      Consultation
+    </option>
+    <option value="Services" className="bg-black text-white">Services</option>
+    <option value="Food" className="bg-black text-white">Food</option>
+    <option value="Other" className="bg-black text-white">Other</option>
+  </select>
+
+  {/* Custom Arrow */}
+  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-4 h-4 text-white"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+        clipRule="evenodd"
+      />
+    </svg>
+  </div>
+</div>
+
+
+
+
 
             {/* Custom Business Category (only if 'Other' is selected) */}
             {businessCategory === "Other" && (

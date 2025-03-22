@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { X, ArrowLeft } from "lucide-react"; 
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 export default function Page() {
   const [showBusinessLogin, setShowBusinessLogin] = useState(false);
@@ -12,7 +14,7 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showEmailOtpField, setShowEmailOtpField] = useState(false);
   const [showNumberOtpField, setShowNumberOtpField] = useState(false);
-
+  const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -302,10 +304,14 @@ export default function Page() {
       {/* Register Button */}
       <button
         className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition"
-        onClick={handleRegister}
+        onClick={() => {
+          handleRegister(); 
+          router.push("/complete-profile-business"); 
+        }}
       >
-        Register
+        Register Business
       </button>
+
 
       {/* Sign in with Google */}
       <div className="mt-3 text-center">
