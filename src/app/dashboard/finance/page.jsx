@@ -1,6 +1,6 @@
 // src/app/dashboard/finance/page.jsx
 
-"use client"; // Add this line at the very top
+"use client";
 
 import React, { useState } from 'react';
 import DashboardLayout from '../components/dashboardlayout';
@@ -12,6 +12,45 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 function FinancePage() {
   const [dateRange, setDateRange] = useState('7days');
+  
+     // --- Account Payable Related ---
+  const [accountsPayable, setAccountsPayable] = useState([
+    { accountName: 'Supplier X', amount: 1000, date: '2023-11-15', paymentMethod: 'Cash' },
+    { accountName: 'Supplier Y', amount: 1500, date: '2023-11-20', paymentMethod: 'Bank Transfer' },
+    // Add more sample data here
+  ]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newAccount, setNewAccount] = useState({
+    accountName: '',
+    amount: '',
+    date: '',
+    paymentMethod: 'Cash',
+  });
+  const [editIndex, setEditIndex] = useState(null); // Track the index of the item being edited
+  const [editAccount, setEditAccount] = useState({ // Store the data being edited
+    accountName: '',
+    amount: '',
+    date: '',
+    paymentMethod: 'Cash',
+  });
+  // --- Account Payable Related ---
+
+
+
+     // --- Account Receivable Related ---
+    const [accountsReceivable, setAccountsReceivable] = useState([
+      { customerName: 'Customer A', amount: 1200, dueDate: '2023-11-25', paymentStatus: 'Pending' },
+      { customerName: 'Customer B', amount: 1800, dueDate: '2023-11-30', paymentStatus: 'Paid' },
+      // Add sample receivable data
+    ]);
+    const [showAddReceivableForm, setShowAddReceivableForm] = useState(false);
+    const [newReceivable, setNewReceivable] = useState({
+      customerName: '',
+      amount: '',
+      dueDate: '',
+      paymentStatus: 'Pending',
+    });
+    // --- Account Receivable Related ---
 
   const getChartData = () => {
     if (dateRange === '7days') {
@@ -97,6 +136,33 @@ function FinancePage() {
     },
   };
 
+   // --- Account Payable Related ---
+   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAccount({ ...newAccount, [name]: value });
+  };
+
+  const handleAddAccount = () => {
+    // Add the new account to the state
+    setAccountsPayable([...accountsPayable, newAccount]);
+    setShowAddForm(false);
+    setNewAccount({ accountName: '', amount: '', date: '', paymentMethod: 'Cash' });
+  };
+  // --- Account Payable Related ---
+
+  // --- Account Receivable Related ---
+  const handleReceivableInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewReceivable({ ...newReceivable, [name]: value });
+  };
+
+  const handleAddReceivable = () => {
+    setAccountsReceivable([...accountsReceivable, newReceivable]);
+    setShowAddReceivableForm(false);
+    setNewReceivable({ customerName: '', amount: '', dueDate: '', paymentStatus: 'Pending' });
+  };
+  // --- Account Receivable Related ---
+
   return (
     <DashboardLayout>
       <div className="p-4 text-white">
@@ -126,9 +192,8 @@ function FinancePage() {
             </div>
           </div>
         </div>
-
-        {/* Profit/Expenses Graph */}
-        <div className="bg-opacity-0 border border-white rounded-xl p-4">
+{/* Profit/Expenses Graph */}
+<div className="bg-opacity-0 border border-white rounded-xl p-4">
           <div className="flex justify-end mb-4">
             <button
               className={`text-white p-2 rounded-md ${dateRange === '7days' ? 'bg-blue-500' : 'bg-gray-800'}`}
@@ -146,8 +211,167 @@ function FinancePage() {
           <Line data={getChartData()} options={chartOptions} />
         </div>
 
+       {/* Accounts Payable Heading */}
+       <h1 className="text-lg font-semibold mb-4 mt-8">Accounts Payable</h1>
 
-    
+{/* --- Account Payable Related --- */}
+<button onClick={() => setShowAddForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+  Add New Account Payable
+</button>
+
+{showAddForm && (
+  <div className="bg-opacity-0 border border-white rounded-xl p-4 mb-4">
+    {/* ... (Payable Form) ... */}
+     <input
+      type="text"
+      name="accountName"
+      placeholder="Account Name"
+      value={newAccount.accountName}
+      onChange={handleInputChange}
+      className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+    />
+    <input
+      type="number"
+      name="amount"
+      placeholder="Amount"
+      value={newAccount.amount}
+      onChange={handleInputChange}
+      className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+    />
+    <input
+      type="date"
+      name="date"
+      value={newAccount.date}
+      onChange={handleInputChange}
+      className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+    />
+    <select
+      name="paymentMethod"
+      value={newAccount.paymentMethod}
+      onChange={handleInputChange}
+      className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+    >
+      <option value="Cash">Cash</option>
+      <option value="Cheque">Cheque</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
+    <button onClick={handleAddAccount} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+      Add Account
+    </button>
+    <button onClick={() => setShowAddForm(false)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+      Cancel
+    </button>
+  </div>
+)}
+
+{/* Accounts Payable Table Bento Box with White Borders */}
+<div className="bg-opacity-0 border border-white rounded-xl p-4 overflow-y-auto max-h-[300px]">
+  <table className="w-full border-collapse">
+    <thead>
+      <tr>
+        <th className="text-left text-white border border-white p-2">Sl. No.</th>
+        <th className="text-left text-white border border-white p-2">Account Name</th>
+        <th className="text-right text-white border border-white p-2">Amount</th>
+        <th className="text-left text-white border border-white p-2">Date</th>
+        <th className="text-left text-white border border-white p-2">Payment Method</th>
+      </tr>
+    </thead>
+    <tbody>
+      {accountsPayable.map((item, index) => (
+        <tr key={index}>
+          <td className="text-left text-white border border-white p-2">{index + 1}</td>
+          <td className="text-left text-white border border-white p-2">{item.accountName}</td>
+          <td className="text-right text-white border border-white p-2">₹{item.amount}</td>
+          <td className="text-left text-white border border-white p-2">{item.date}</td>
+          <td className="text-left text-white border border-white p-2">{item.paymentMethod}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+{/* --- Account Payable Related --- */}
+
+
+        {/* Accounts Receivable Heading */}
+        <h1 className="text-lg font-semibold mb-4 mt-8">Accounts Receivable</h1>
+
+        {/* --- Account Receivable Related --- */}
+        <button onClick={() => setShowAddReceivableForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+          Add New Account Receivable
+        </button>
+
+        {showAddReceivableForm && (
+          <div className="bg-opacity-0 border border-white rounded-xl p-4 mb-4">
+            {/* ... (Receivable Form) ... */}
+            <input
+              type="text"
+              name="customerName"
+              placeholder="Customer Name"
+              value={newReceivable.customerName}
+              onChange={handleReceivableInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            />
+            <input
+              type="number"
+              name="amount"
+              placeholder="Amount"
+              value={newReceivable.amount}
+              onChange={handleReceivableInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            />
+            <input
+              type="date"
+              name="dueDate"
+              value={newReceivable.dueDate}
+              onChange={handleReceivableInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            />
+            <select
+              name="paymentStatus"
+              value={newReceivable.paymentStatus}
+              onChange={handleReceivableInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Paid">Paid</option>
+            </select>
+            <button onClick={handleAddReceivable} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              Add Receivable
+            </button>
+            <button onClick={() => setShowAddReceivableForm(false)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">
+              Cancel
+            </button>
+          </div>
+        )}
+
+        {/* Accounts Receivable Table Bento Box with White Borders */}
+        <div className="bg-opacity-0 border border-white rounded-xl p-4 overflow-y-auto max-h-[300px]">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="text-left text-white border border-white p-2">Sl. No.</th>
+                <th className="text-left text-white border border-white p-2">Customer Name</th>
+                <th className="text-right text-white border border-white p-2">Amount</th>
+                <th className="text-left text-white border border-white p-2">Due Date</th>
+                <th className="text-left text-white border border-white p-2">Payment Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accountsReceivable.map((item, index) => (
+                <tr key={index}>
+                  <td className="text-left text-white border border-white p-2">{index + 1}</td>
+                  <td className="text-left text-white border border-white p-2">{item.customerName}</td>
+                  <td className="text-right text-white border border-white p-2">₹{item.amount}</td>
+                  <td className="text-left text-white border border-white p-2">{item.dueDate}</td>
+                  <td className="text-left text-white border border-white p-2">{item.paymentStatus}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* --- Account Receivable Related --- */}
+
+
       </div>
     </DashboardLayout>
   );
