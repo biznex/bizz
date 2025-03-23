@@ -422,21 +422,7 @@ function FinancePage() {
     </button>
   </div>
 </div>
-          {/* Salary Heading and Buttons */}
-<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4">
-  <h1 className="text-lg font-semibold mb-2 md:mb-0">Salary</h1>
-  <div className="flex flex-col md:flex-row mt-2 md:mt-0">
-    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded md:mr-2 mb-2 md:mb-0">
-      Edit Employee Details
-    </button>
-    <button
-      onClick={() => setShowAddEmployeeForm(true)}
-      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-    >
-      Add New Employee
-    </button>
-  </div>
-</div>
+ 
 
         {/* Add Employee Form */}
         {showAddEmployeeForm && (
