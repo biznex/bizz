@@ -97,6 +97,47 @@ function DashboardPage() {
     },
   };
 
+  const ordersChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: 'white',
+        },
+      },
+      title: {
+        display: true,
+        text: 'Orders Over Time',
+        color: 'white',
+      },
+      tooltip: {
+        titleColor: 'white',
+        bodyColor: 'white',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+      },
+      y: {
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+      },
+    },
+  };
+  
+
   const lowStockProducts = [
     { product: 'Product A', quantity: 5 },
     { product: 'Product B', quantity: 2 },
@@ -123,21 +164,21 @@ function DashboardPage() {
             <FaMoneyBillAlt className="text-2xl" />
             <div className="text-right">
               <h2 className="text-sm font-semibold text-white">Income</h2>
-              <p className="text-lg text-white">$1,500.00</p>
+              <p className="text-lg text-white">₹1,500.00</p>
             </div>
           </div>
           <div className="bg-opacity-0 border border-white rounded-xl p-4 flex items-center justify-between">
             <FaChartLine className="text-2xl" />
             <div className="text-right">
               <h2 className="text-sm font-semibold text-white">Profit</h2>
-              <p className="text-lg text-white">$800.00</p>
+              <p className="text-lg text-white">₹800.00</p>
             </div>
           </div>
           <div className="bg-opacity-0 border border-white rounded-xl p-4 flex items-center justify-between">
             <FaChartBar className="text-2xl" />
             <div className="text-right">
               <h2 className="text-sm font-semibold text-white">Expenses</h2>
-              <p className="text-lg text-white">$700.00</p>
+              <p className="text-lg text-white">₹700.00</p>
             </div>
           </div>
           <div className="bg-opacity-0 border border-white rounded-xl p-4 flex items-center justify-between">
@@ -166,6 +207,33 @@ function DashboardPage() {
             </div>
             <Line data={getChartData()} options={chartOptions} />
           </div>
+
+
+         {/* Orders Graph */}
+        <div className="col-span-2 bg-opacity-0 border border-white rounded-xl p-4">
+          <h2 className="text-lg font-semibold text-white mb-4">Orders Over Time</h2>
+          <Line
+            data={{
+              labels: dateRange === '7days' 
+                ? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']
+                : ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+              datasets: [
+                {
+                  label: 'Orders',
+                  data: dateRange === '7days' 
+                    ? [5, 8, 6, 10, 12, 9, 15] 
+                    : [30, 45, 40, 55],
+                  fill: false,
+                  backgroundColor: 'blue',
+                  borderColor: 'rgba(0, 123, 255, 0.5)',
+                },
+              ],
+            }}
+            options={ordersChartOptions} 
+          />
+        </div>
+
+
 
           {/* Low Stock Products (Updated) */}
           <div className="col-span-2 bg-opacity-0 border border-white rounded-xl p-4 overflow-y-auto max-h-[300px]">
