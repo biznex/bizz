@@ -138,21 +138,7 @@ function DashboardPage() {
   };
   
 
-  const lowStockProducts = [
-    { product: 'Product A', quantity: 5 },
-    { product: 'Product B', quantity: 2 },
-    { product: 'Product C', quantity: 1},
-    { product: 'Product D', quantity: 8 },
-    { product: 'Product E', quantity: 3 },
-    { product: 'Product F', quantity: 6 },
-    { product: 'Product G', quantity: 4 },
-    { product: 'Product H', quantity: 9 },
-    { product: 'Product I', quantity: 2 },
-    { product: 'Product J', quantity: 6 },
-    { product: 'Product K', quantity: 4 },
-    { product: 'Product L', quantity: 9 },
-    { product: 'Product M', quantity: 2 },
-  ];
+  
 
   return (
     <DashboardLayout>
@@ -235,44 +221,9 @@ function DashboardPage() {
 
 
 
-          {/* Low Stock Products (Updated) */}
-          <div className="col-span-2 bg-opacity-0 border border-white rounded-xl p-4 overflow-y-auto max-h-[300px]">
-            <h2 className="text-lg font-semibold text-white mb-2">Low Stock</h2>
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="text-left text-white">Product</th>
-                  <th className="text-right text-white">Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lowStockProducts.map((item, index) => (
-                  <tr key={index}>
-                    <td className="text-left text-white">{item.product}</td>
-                    <td className="text-right text-white">{item.quantity}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <style jsx>{`
-              ::-webkit-scrollbar {
-                width: 6px;
-              }
-              ::-webkit-scrollbar-track {
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 3px;
-              }
-              ::-webkit-scrollbar-thumb {
-                background: rgba(255, 255, 255, 0.2);
-                border-radius: 3px;
-              }
-              ::-webkit-scrollbar-thumb:hover {
-                background: rgba(255, 255, 255, 0.3);
-              }
-              `}</style>
-              </div>
+          
             </div>
-            </div>
+          </div>
             </DashboardLayout>
             );
             }
