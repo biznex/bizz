@@ -52,6 +52,22 @@ function FinancePage() {
     });
     // --- Account Receivable Related ---
 
+
+    // --- Salary Related ---
+  const [employees, setEmployees] = useState([
+    { name: 'John Doe', salary: 50000, role: 'Developer', paymentStatus: 'Pending' },
+    { name: 'Jane Smith', salary: 60000, role: 'Manager', paymentStatus: 'Paid' },
+    // Add more employee data
+  ]);
+  const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({
+    name: '',
+    salary: '',
+    role: '',
+    paymentStatus: 'Pending',
+  });
+  // --- Salary Related ---
+
   const getChartData = () => {
     if (dateRange === '7days') {
       return {
@@ -163,6 +179,24 @@ function FinancePage() {
   };
   // --- Account Receivable Related ---
 
+
+  // --- Salary Related ---
+  const handleEmployeeInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEmployee({ ...newEmployee, [name]: value });
+  };
+
+  const handleAddEmployee = () => {
+    setEmployees([...employees, newEmployee]);
+    setShowAddEmployeeForm(false);
+    setNewEmployee({ name: '', salary: '', role: '', paymentStatus: 'Pending' });
+  };
+  // --- Salary Related ---
+
+
+
+
+
   return (
     <DashboardLayout>
       <div className="p-4 text-white">
@@ -212,12 +246,12 @@ function FinancePage() {
         </div>
 
        {/* Accounts Payable Heading */}
-       <h1 className="text-lg font-semibold mb-4 mt-8">Accounts Payable</h1>
-
-{/* --- Account Payable Related --- */}
-<button onClick={() => setShowAddForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-  Add New Account Payable
-</button>
+<div className="flex justify-between items-center mt-8 mb-4">
+  <h1 className="text-lg font-semibold">Accounts Payable</h1>
+  <button onClick={() => setShowAddForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Add New Account Payable
+  </button>
+</div>
 
 {showAddForm && (
   <div className="bg-opacity-0 border border-white rounded-xl p-4 mb-4">
@@ -293,12 +327,12 @@ function FinancePage() {
 
 
         {/* Accounts Receivable Heading */}
-        <h1 className="text-lg font-semibold mb-4 mt-8">Accounts Receivable</h1>
-
-        {/* --- Account Receivable Related --- */}
-        <button onClick={() => setShowAddReceivableForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-          Add New Account Receivable
-        </button>
+<div className="flex justify-between items-center mt-8 mb-4">
+  <h1 className="text-lg font-semibold">Accounts Receivable</h1>
+  <button onClick={() => setShowAddReceivableForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Add New Account Receivable
+  </button>
+</div>
 
         {showAddReceivableForm && (
           <div className="bg-opacity-0 border border-white rounded-xl p-4 mb-4">
@@ -370,6 +404,108 @@ function FinancePage() {
           </table>
         </div>
         {/* --- Account Receivable Related --- */}
+
+
+
+
+        {/* Salary Heading and Buttons */}
+        <div className="flex justify-between items-center mt-8 mb-4">
+          <h1 className="text-lg font-semibold text-center w-full md:w-auto">Salary</h1>
+          <div>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+              Edit Employee Details
+            </button>
+            <button
+              onClick={() => setShowAddEmployeeForm(true)}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Add New Employee
+            </button>
+          </div>
+        </div>
+
+        {/* Add Employee Form */}
+        {showAddEmployeeForm && (
+          <div className="bg-opacity-0 border border-white rounded-xl p-4 mb-4">
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={newEmployee.name}
+              onChange={handleEmployeeInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            />
+            <input
+              type="number"
+              name="salary"
+              placeholder="Salary"
+              value={newEmployee.salary}
+              onChange={handleEmployeeInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            />
+            <input
+              type="text"
+              name="role"
+              placeholder="Role"
+              value={newEmployee.role}
+              onChange={handleEmployeeInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            />
+            <select
+              name="paymentStatus"
+              value={newEmployee.paymentStatus}
+              onChange={handleEmployeeInputChange}
+              className="bg-gray-800 border border-white rounded-md p-2 mb-2 w-full"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Paid">Paid</option>
+            </select>
+            <button
+              onClick={handleAddEmployee}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Add Employee
+            </button>
+            <button
+              onClick={() => setShowAddEmployeeForm(false)}
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
+        {/* Salary Table */}
+        <div className="bg-opacity-0 border border-white rounded-xl p-4 overflow-y-auto max-h-[300px]">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="text-left text-white border border-white p-2">Sl. No.</th>
+                <th className="text-left text-white border border-white p-2">Name</th>
+                <th className="text-right text-white border border-white p-2">Salary</th>
+                <th className="text-left text-white border border-white p-2">Role</th>
+                <th className="text-left text-white border border-white p-2">Payment Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((employee, index) => (
+                <tr key={index}>
+                  <td className="text-left text-white border border-white p-2">{index + 1}</td>
+                  <td className="text-left text-white border border-white p-2">{employee.name}</td>
+                  <td className="text-right text-white border border-white p-2">₹{employee.salary}</td>
+                  <td className="text-left text-white border border-white p-2">{employee.role}</td>
+                  <td className="text-left text-white border border-white p-2">{employee.paymentStatus}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+
+
+
+
+
 
 
       </div>
