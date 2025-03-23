@@ -13,7 +13,7 @@ function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[url('/bg.png')] bg-cover bg-no-repeat bg-center">
+    <div className="flex h-screen w-full bg-[url('/bg.png')] bg-cover bg-no-repeat bg-center bg-fixed"> {/* Added bg-fixed */}
       {/* Hamburger Menu (Mobile View) */}
       <button
         className="absolute top-4 left-4 text-white md:hidden z-50"
@@ -34,7 +34,7 @@ function DashboardLayout({ children }) {
       </div>
 
       {/* Main Content (Header and Content) */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-y-auto"> {/* Added overflow-y-auto */}
         <div className="bg-opacity-0">
           <DashboardHeader />
         </div>
