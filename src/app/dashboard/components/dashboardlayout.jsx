@@ -13,7 +13,7 @@ function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[url('/bg.png')] bg-cover bg-no-repeat bg-center bg-fixed"> {/* Added bg-fixed */}
+    <div className="flex h-screen w-full bg-[url('/bg2.jpg')] bg-cover bg-no-repeat bg-center bg-fixed"> {/* Added bg-fixed */}
       {/* Hamburger Menu (Mobile View) */}
       <button
         className="absolute top-4 left-4 text-white md:hidden z-50"
