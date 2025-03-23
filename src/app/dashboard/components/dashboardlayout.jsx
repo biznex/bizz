@@ -24,7 +24,7 @@ function DashboardLayout({ children }) {
 
       {/* Floating Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-48 text-left text-white p-4 transition-transform duration-300 transform z-40 ${
+        className={`fixed top-0 left-0 h-full w-48 flex flex-col text-left text-white p-4 transition-transform duration-300 transform z-40 ${
           isSidebarOpen
             ? 'translate-x-0 backdrop-filter backdrop-blur-lg bg-opacity-20 bg-black'
             : '-translate-x-full'
