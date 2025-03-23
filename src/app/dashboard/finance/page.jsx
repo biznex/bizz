@@ -246,8 +246,8 @@ function FinancePage() {
         </div>
 
        {/* Accounts Payable Heading */}
-<div className="flex justify-between items-center mt-8 mb-4">
-  <h1 className="text-lg font-semibold">Accounts Payable</h1>
+<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4">
+  <h1 className="text-lg font-semibold mb-2 md:mb-0">Accounts Payable</h1>
   <button onClick={() => setShowAddForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
     Add New Account Payable
   </button>
@@ -325,10 +325,9 @@ function FinancePage() {
 </div>
 {/* --- Account Payable Related --- */}
 
-
-        {/* Accounts Receivable Heading */}
-<div className="flex justify-between items-center mt-8 mb-4">
-  <h1 className="text-lg font-semibold">Accounts Receivable</h1>
+{/* Accounts Receivable Heading */}
+<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4">
+  <h1 className="text-lg font-semibold mb-2 md:mb-0">Accounts Receivable</h1>
   <button onClick={() => setShowAddReceivableForm(true)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
     Add New Account Receivable
   </button>
@@ -409,20 +408,35 @@ function FinancePage() {
 
 
         {/* Salary Heading and Buttons */}
-        <div className="flex justify-between items-center mt-8 mb-4">
-          <h1 className="text-lg font-semibold text-center w-full md:w-auto">Salary</h1>
-          <div>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-              Edit Employee Details
-            </button>
-            <button
-              onClick={() => setShowAddEmployeeForm(true)}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Add New Employee
-            </button>
-          </div>
-        </div>
+<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4">
+  <h1 className="text-lg font-semibold mb-2 md:mb-0">Salary</h1>
+  <div className="flex flex-col md:flex-row mt-2 md:mt-0">
+    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded md:mr-2 mb-2 md:mb-0">
+      Edit Employee Details
+    </button>
+    <button
+      onClick={() => setShowAddEmployeeForm(true)}
+      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+    >
+      Add New Employee
+    </button>
+  </div>
+</div>
+          {/* Salary Heading and Buttons */}
+<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4">
+  <h1 className="text-lg font-semibold mb-2 md:mb-0">Salary</h1>
+  <div className="flex flex-col md:flex-row mt-2 md:mt-0">
+    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded md:mr-2 mb-2 md:mb-0">
+      Edit Employee Details
+    </button>
+    <button
+      onClick={() => setShowAddEmployeeForm(true)}
+      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+    >
+      Add New Employee
+    </button>
+  </div>
+</div>
 
         {/* Add Employee Form */}
         {showAddEmployeeForm && (
