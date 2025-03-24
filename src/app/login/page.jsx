@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { X, ArrowLeft } from "lucide-react"; 
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
-
 
 export default function Page() {
   const [showBusinessLogin, setShowBusinessLogin] = useState(false);
@@ -14,7 +12,9 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showEmailOtpField, setShowEmailOtpField] = useState(false);
   const [showNumberOtpField, setShowNumberOtpField] = useState(false);
-  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,20 +23,245 @@ export default function Page() {
   const [emailVerified, setEmailVerified] = useState(false);
   const [numberVerified, setNumberVerified] = useState(false);
 
-  const handleRegister = () => {
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return;
-    }
+  const [jobAspirantEmail, setJobAspirantEmail] = useState("");
+  const [jobAspirantPassword, setJobAspirantPassword] = useState("");
+  const [jobAspirantLoading, setJobAspirantLoading] = useState(false);
+  const [jobAspirantError, setJobAspirantError] = useState("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+ //const [email, setEmail] = useState("");
+const [isEmailVerified, setIsEmailVerified] = useState(false);
+const [emailOtp, setEmailOtp] = useState("");
+const [isEmailOtpVerified, setIsEmailOtpVerified] = useState(false);
 
-    setError(""); 
-    alert("Registration Successful!");
+const [phone, setPhone] = useState("");
+const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+const [phoneOtp, setPhoneOtp] = useState("");
+const [isPhoneOtpVerified, setIsPhoneOtpVerified] = useState(false);
+
+/*const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");*/
+
+
+
+const handleRegister = async () => {
+  if (!isEmailOtpVerified || !isPhoneOtpVerified) {
+    setError("Please verify your email and phone first.");
+    return;
+  }
+
+  if (password.length<8){
+    setError("Password should be atleast 8 characters")
+  }
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const response = await fetch('https://yourapi.com/register', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, phone, password }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      // Redirect to a different page upon successful registration
+      window.location.href = '/success-page';
+    } else {
+      setError(data.message || "Registration failed.");
+    }
+  } catch (error) {
+    setError("An error occurred. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+  //Business login api fetch
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(""); // Clear previous errors
+  
+    try {
+      const response = await fetch('https://biznex.onrender.com/login/job-user/login-job-user', {
+        method: 'POST',
+        credentials: 'include' ,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email, // Use the email state
+          password: password, // Use the password state
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data); // Log the response to the console
+        alert("Login Successful!"); // Notify the user
+        // Optionally, redirect or perform other actions here
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Login failed"); // Display error message
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again."); // Handle network errors
+    } finally {
+      setLoading(false); // Reset loading state
+    }
   };
+
+  //jobaspirant login api fetch
+  const handleJobAspirantLogin = async () => {
+    setJobAspirantLoading(true);
+    setJobAspirantError(""); // Clear previous errors
+  
+    try {
+      const response = await fetch('https://biznex.onrender.com/login/aspirant/login-aspirant', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: jobAspirantEmail, // Use the job aspirant email state
+          password: jobAspirantPassword, // Use the job aspirant password state
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data); // Log the response to the console
+        alert("Login Successful!"); // Notify the user
+        // Optionally, redirect or perform other actions here
+      } else {
+        const errorData = await response.json();
+        setJobAspirantError(errorData.message || "Login failed"); // Display error message
+      }
+    } catch (error) {
+      setJobAspirantError("An unexpected error occurred. Please try again later."); // Handle network errors
+    } finally {
+      setJobAspirantLoading(false); // Reset loading state
+    }
+  };
+
+  const handleVerifyEmail = async () => {
+    setLoading(true);
+    setError("");
+  
+    try {
+      const response = await fetch('https://biznex.onrender.com/signup/client/send-email-otp', {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      console.log(data);
+  
+      const data = await response.json();
+      if (response.ok && data.message === "Email OTP sent successfully.") {
+        setIsEmailVerified(true);
+      } else {
+        setError(data.message || "Failed to send OTP.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    setLoading(true);
+    setError("");
+  
+    try {
+      const response = await fetch('https://biznex.onrender.com/signup/client/verify-email-otp', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, otp: emailOtp }),
+      });
+  
+      const data = await response.json();
+      if (response.ok && data.message === 'Email verified successfully.') {
+        setIsEmailOtpVerified(true);
+      } else {
+        setError(data.message || "Failed to verify OTP.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyPhone = async () => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const response = await fetch('https://biznex.onrender.com/signup/client/send-phone-otp', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ phone }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data.message === 'Phone OTP sent successfully.') {
+      setIsPhoneVerified(true);
+    } else {
+      setError(data.message || "Failed to send OTP.");
+    }
+  } catch (error) {
+    setError("An error occurred. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleVerifyPhoneOtp = async () => {
+  setLoading(true);
+  setError("");
+
+  try {
+    const response = await fetch('https://biznex.onrender.com/signup/client/verify-phone-otp', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ phone, otp: phoneOtp }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data.message === 'Phone verified successfully.') {
+      setIsPhoneOtpVerified(true);
+    } else {
+      setError(data.message || "Failed to verify OTP.");
+    }
+  } catch (error) {
+    setError("An error occurred. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -103,7 +328,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Business Login Popup */}
       {showBusinessLogin && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center">
           <div className="relative w-96 md:w-[450px] lg:w-[500px] p-4 rounded-lg border border-gray-300 bg-opacity-80 backdrop-blur-md">
@@ -120,15 +344,22 @@ export default function Page() {
               type="email"
               placeholder="Enter your email"
               className="w-full p-2 mt-4 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
+              onChange={(e) => setEmail(e.target.value)} // Update email state
             />
             <input
               type="password"
               placeholder="Enter your password"
               className="w-full p-2 mt-2 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
+              onChange={(e) => setPassword(e.target.value)} // Update password state
             />
-            <button className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition">
-              Login
+            <button 
+              className={`w-full mt-4 px-4 py-2 ${loading ? 'bg-gray-500' : 'bg-[#F16517]'} text-white text-sm rounded-md hover:bg-[#d14b10] transition`}
+              onClick={handleLogin}
+              disabled={loading} // Disable button while loading
+            >
+              {loading ? 'Logging in...' : 'Login'}
             </button>
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
             <button className="w-full mt-2 px-4 py-2 border border-gray-300 text-white text-sm rounded-md hover:bg-gray-700 transition">
               Sign in with Google
             </button>
@@ -154,15 +385,22 @@ export default function Page() {
               type="email"
               placeholder="Enter your email"
               className="w-full p-2 mt-4 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
+              onChange={(e) => setJobAspirantEmail(e.target.value)} // Update email state
             />
             <input
               type="password"
               placeholder="Enter your password"
               className="w-full p-2 mt-2 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
+              onChange={(e) => setJobAspirantPassword(e.target.value)} // Update password state
             />
-            <button className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition">
-              Login
+            <button 
+              className={`w-full mt-4 px-4 py-2 ${jobAspirantLoading ? 'bg-gray-500' : 'bg-[#F16517]'} text-white text-sm rounded-md hover:bg-[#d14b10] transition`}
+              onClick={handleJobAspirantLogin}
+              disabled={jobAspirantLoading} // Disable button while loading
+            >
+              {jobAspirantLoading ? 'Logging in...' : 'Login'}
             </button>
+            {jobAspirantError && <p className="text-red-500 text-xs mt-1">{jobAspirantError}</p>}
             <button className="w-full mt-2 px-4 py-2 border border-gray-300 text-white text-sm rounded-md hover:bg-gray-700 transition">
               Sign in with Google
             </button>
@@ -190,73 +428,96 @@ export default function Page() {
     <div className="relative w-full mt-2">
       <input
         type="email"
-        placeholder="Email"
+        value={email}
+        onChange={(e)=> setEmail(e.target.value)}
+        placeholder="Enter your Email"
         className="w-full p-2 pr-20 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
-        disabled={emailVerified} // Disable input if verified
+        disabled={isEmailVerified} // Disable input if verified
       />
-      <span
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#F16517] text-sm cursor-pointer"
-        onClick={() => setShowEmailOtpField(true)}
+      <button
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#F16517] text-sm cursor-pointer px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={() => {
+          setShowEmailOtpField(true);
+          handleVerifyEmail(); // ✅ Now properly executes
+        }}
+        disabled={isEmailVerified}
       >
-        {emailVerified ? <span className="text-[#F16517]">✔</span> : "Verify Email"}
-      </span>
+        { isEmailVerified ? "✔ Verified" : "Verify Email"}
+      </button>
+
     </div>
 
     {/* OTP Field for Email */}
-    {showEmailOtpField && !emailVerified && (
+    {showEmailOtpField && isEmailVerified && (
       <div className="relative w-full mt-2">
         <input
           type="text"
+          value={emailOtp}
+          onChange={(e) => setEmailOtp(e.target.value)}
           placeholder="Enter OTP"
           className="w-full p-2 pr-20 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
         />
-        <span
+        <button
           className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#F16517] text-sm cursor-pointer"
           onClick={() => {
-            setEmailVerified(true);
-            setShowEmailOtpField(false);
+            setIsEmailVerified(true),
+            setShowEmailOtpField(false),
+            handleVerifyEmailOtp();
+
           }}
         >
           Verify OTP
-        </span>
+        </button>
       </div>
     )}
 
     {/* Phone Number with Verify Option */}
-    <div className="relative w-full mt-2">
+    { (
+      <div className="relative w-full mt-2">
       <input
         type="tel"
-        placeholder="Phone Number"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        placeholder="Enter your Phone Number"
         className="w-full py-2 px-3 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400 focus:outline-none"
-        disabled={numberVerified} // Disable input if verified
+        disabled={isPhoneVerified} // Disable input if verified
       />
-      <span
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#F16517] text-sm cursor-pointer"
-        onClick={() => setShowNumberOtpField(true)}
+      <button
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-transparent text-[#F16517] text-sm cursor-pointer px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={handleVerifyPhone}
+        disabled={isPhoneVerified || loading}
       >
-        {numberVerified ? <span className="text-[#F16517]">✔</span> : "Verify PhNo"}
-      </span>
+        { isPhoneVerified ? "✔ Verified" : "Verify PhNo"}
+      </button>
     </div>
+    
+    )}
 
     {/* OTP Field for Phone Number */}
-    {showNumberOtpField && !numberVerified && (
+    {showNumberOtpField && !isPhoneVerified && (
       <div className="relative w-full mt-2 flex items-center">
         <input
           type="text"
+          value={phoneOtp}
+          onChange={(e) => setPhoneOtp(e.target.value)}
           placeholder="Enter OTP"
+          disabled={isPhoneOtpVerified}
           className="w-full p-2 pr-20 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
         />
-        <span
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-[#F16517] text-sm cursor-pointer"
-          onClick={() => {
-            setNumberVerified(true);
-            setShowNumberOtpField(false);
-          }}
+        <button
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#F16517] text-sm cursor-pointer px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleVerifyPhoneOtp} 
+          disabled={isPhoneOtpVerified || loading}
         >
-          Verify OTP
-        </span>
+          { isPhoneOtpVerified ? "✔ Verified" : "Verify OTP"}
+        </button>
+
       </div>
     )}
+
+    {/* Error and Loading Messages /}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
+    {loading && <p>Loading...</p>*/}
 
       {/* Password & Confirm Password Fields */}
 <div className="flex flex-col md:flex-row gap-2 mt-2">
@@ -304,22 +565,18 @@ export default function Page() {
       {/* Register Button */}
       <button
         className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition"
-        onClick={() => {
-          handleRegister(); 
-          router.push("/complete-profile-business"); 
-        }}
+        onClick={handleRegister}
       >
-        Register a Business
+        Register
       </button>
 
-
       {/* Sign in with Google */}
-      <div className="mt-3 text-center">
+      {/*<div className="mt-3 text-center">
         <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-black text-sm rounded-md hover:bg-gray-200 transition">
           <img src="\google.svg" alt="Google" className="w-5 h-5" />
           Sign in with Google
         </button>
-      </div>
+      </div> */}
     </div>
   </div>
 )}
@@ -433,24 +690,24 @@ export default function Page() {
           </span>
         </div>
 
-          {/* Confirm Password Field */}
-          <div className="relative w-full md:w-1/2">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm Password"
-              className="w-full p-2 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            {/* Toggle Eye Icon */}
-            <span
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </span>
-          </div>
+        {/* Confirm Password Field */}
+        <div className="relative w-full md:w-1/2">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            className="w-full p-2 border border-gray-300 rounded-md bg-transparent text-white text-sm placeholder-gray-400"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          {/* Toggle Eye Icon */}
+          <span
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </span>
         </div>
+      </div>
 
       {/* Error Messages */}
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
@@ -458,12 +715,9 @@ export default function Page() {
       {/* Register Button */}
       <button
         className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition"
-        onClick={() => {
-          handleRegister(); 
-          router.push("/complete-profile-job"); 
-        }}
+        onClick={handleRegister}
       >
-        Register for Job Aspirant
+        Register
       </button>
 
       {/* Sign in with Google */}
@@ -476,6 +730,13 @@ export default function Page() {
     </div>
   </div>
 )}
+
+
+
+
+      
+
+
 
 
     </div>
