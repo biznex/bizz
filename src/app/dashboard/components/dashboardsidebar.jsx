@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Home, FileText, CreditCard, Boxes, LogOut,Banknote,ArrowLeftRight,IndianRupee } from 'lucide-react';
+import { Home, FileText, CreditCard, Boxes, LogOut,Banknote,ArrowLeftRight,IndianRupee,ChevronDown } from 'lucide-react';
 
 function DashboardSidebar() {
   const [showFinanceSubMenu, setShowFinanceSubMenu] = useState(false);
@@ -25,6 +25,7 @@ function DashboardSidebar() {
           >
             <FileText size={18} className="shrink-0" />
             <span>Finance</span>
+            <ChevronDown size={18} className="shrink-0" />
           </div>
           {showFinanceSubMenu && (
             <ul className="pl-6">
