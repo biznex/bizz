@@ -3,14 +3,16 @@
 "use client";
 
 import React, { useState } from 'react';
-import DashboardLayout from './components/dashboardlayout';
+import DashboardLayout from '../../components/dashboardlayout';
+
+
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa'; // Import arrow icons
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-function DashboardPage() {
+function FinanceOverviewPage() {
   const [profitDateRange, setProfitDateRange] = useState('7days');
   const [orderDateRange, setOrderDateRange] = useState('7days');
 
@@ -158,7 +160,7 @@ function DashboardPage() {
       "24hours": [5, 7, 6, 8, 10, 12, 9, 11],
       "7days": [5, 8, 6, 10, 12, 9, 15],
       "1month": Array.from({ length: 30 }, () => Math.floor(Math.random() * 50) + 10),
-      "1year": [200, 220, 250, 280, 300, 320, 350, 370, 390, 400, 420, 450],
+      "1year": [200, 220, 250, 280, 300, 320, 350, 370, 390, 400, 420, 12],
     };
   
     return {
@@ -222,116 +224,110 @@ function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="bg-opacity-0 p-4 text-[#2F2F2F]">
-        <h1 className="text-lg font-semibold mb-4">Today's Summary</h1>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Bento Boxes (Modified) */}
-          <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-            <div className="text-left">
-              <h2 className="text-sm font-semibold text-[#2F2F2F]">Income</h2>
-              <p className="text-lg text-[#2F2F2F]">₹1,500.00</p>
-              <p className="text-xs text-[#2F2F2F]">Compared to last week: 
-                <span className="ml-1 text-green-500 flex items-center">
-                  +10% <FaArrowUp className="ml-1" />
-                </span>
-              </p>
-            </div>
-          </div>
-          <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-            <div className="text-left">
-              <h2 className="text-sm font-semibold text-[#2F2F2F]">Profit</h2>
-              <p className="text-lg text-[#2F2F2F]">₹800.00</p>
-              <p className="text-xs text-[#2F2F2F]">Compared to last week: 
-                <span className="ml-1 text-red-500 flex items-center">
-                  -5% <FaArrowDown className="ml-1" />
-                </span>
-              </p>
-            </div>
-          </div>
-          <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-            <div className="text-left">
-              <h2 className="text-sm font-semibold text-[#2F2F2F]">Expenses</h2>
-              <p className="text-lg text-[#2F2F2F]">₹700.00</p>
-              <p className="text-xs text-[#2F2F2F]">Compared to last week: 
-                <span className="ml-1 text-green-500 flex items-center">
-                  +2% <FaArrowUp className="ml-1" />
-                </span>
-              </p>
-            </div>
-          </div>
-          <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-            <div className="text-left">
-              <h2 className="text-sm font-semibold text-[#2F2F2F]">Orders</h2>
-              <p className="text-lg text-[#2F2F2F]">25</p>
-              <p className="text-xs text-[#2F2F2F]">Compared to last week: 
-                <span className="ml-1 text-red-500 flex items-center">
-                  -8% <FaArrowDown className="ml-1" />
-                </span>
-              </p>
-            </div>
-          </div>
+  <h1 className="text-lg font-semibold mb-4">Today's Summary</h1>
 
-{/* Profit/Expenses Graph */}
-<div className="col-span-2 bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-  <div className="flex justify-end mb-4">
-    <select
-      className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
-      value={profitDateRange}
-      onChange={(e) => setProfitDateRange(e.target.value)}
-    >
-      <option value="24hours">Last 24 Hours</option>
-      <option value="7days">Last Week</option>
-      <option value="1month">Last Month</option>
-      <option value="1year">Last Year</option>
-    </select>
-  </div>
-
-  <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Profit & Expenses Over Time</h2>
-
-  <Line
-    data={getChartData(profitDateRange)}
-    options={{
-      ...chartOptions,
-      elements: {
-        line: { tension: 0.4 }, // Smooth curve
-      },
-    }}
-    dataset={{
-      fill: true, // Enables the area effect
-      backgroundColor: 'rgba(0, 123, 255, 0.2)', // Lighter shade for area
-      borderColor: 'rgba(0, 123, 255, 0.5)', // Border color
-      pointBackgroundColor: 'blue',
-    }}
-  />
-</div>
-
-
-
-{/* Orders Graph */}
-<div className="col-span-2 bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-  <div className="flex justify-end mb-4">
-    <select
-      className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
-      value={orderDateRange}
-      onChange={(e) => setOrderDateRange(e.target.value)}
-    >
-      <option value="24hours">Last 24 Hours</option>
-      <option value="7days">Last Week</option>
-      <option value="1month">Last Month</option>
-      <option value="1year">Last Year</option>
-    </select>
-  </div>
-
-  <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Orders Over Time</h2>
-
-  <Line data={getOrdersData(orderDateRange)} options={ordersChartOptions} />
-</div>
-
-
-          
-        </div>
+  {/* Bento Boxes (3 Columns) */}
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
+      <div className="text-left">
+        <h2 className="text-sm font-semibold text-[#2F2F2F]">Income</h2>
+        <p className="text-lg text-[#2F2F2F]">₹1,500.00</p>
+        <p className="text-xs text-[#2F2F2F]">
+          Compared to last week:
+          <span className="ml-1 text-green-500 flex items-center">
+            +10% <FaArrowUp className="ml-1" />
+          </span>
+        </p>
       </div>
+    </div>
+
+    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
+      <div className="text-left">
+        <h2 className="text-sm font-semibold text-[#2F2F2F]">Profit</h2>
+        <p className="text-lg text-[#2F2F2F]">₹800.00</p>
+        <p className="text-xs text-[#2F2F2F]">
+          Compared to last week:
+          <span className="ml-1 text-red-500 flex items-center">
+            -5% <FaArrowDown className="ml-1" />
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
+      <div className="text-left">
+        <h2 className="text-sm font-semibold text-[#2F2F2F]">Expenses</h2>
+        <p className="text-lg text-[#2F2F2F]">₹700.00</p>
+        <p className="text-xs text-[#2F2F2F]">
+          Compared to last week:
+          <span className="ml-1 text-green-500 flex items-center">
+            +2% <FaArrowUp className="ml-1" />
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {/* Graphs (2 Columns) */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    
+    {/* Profit/Expenses Graph */}
+    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
+      <div className="flex justify-end mb-4">
+        <select
+          className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
+          value={profitDateRange}
+          onChange={(e) => setProfitDateRange(e.target.value)}
+        >
+          <option value="24hours">Last 24 Hours</option>
+          <option value="7days">Last Week</option>
+          <option value="1month">Last Month</option>
+          <option value="1year">Last Year</option>
+        </select>
+      </div>
+
+      <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Profit & Expenses Over Time</h2>
+
+      <Line
+        data={getChartData(profitDateRange)}
+        options={{
+          ...chartOptions,
+          elements: { line: { tension: 0.4 } },
+        }}
+        dataset={{
+          fill: true,
+          backgroundColor: 'rgba(0, 123, 255, 0.2)',
+          borderColor: 'rgba(0, 123, 255, 0.5)',
+          pointBackgroundColor: 'blue',
+        }}
+      />
+    </div>
+
+    {/* Orders Graph */}
+    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
+      <div className="flex justify-end mb-4">
+        <select
+          className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
+          value={orderDateRange}
+          onChange={(e) => setOrderDateRange(e.target.value)}
+        >
+          <option value="24hours">Last 24 Hours</option>
+          <option value="7days">Last Week</option>
+          <option value="1month">Last Month</option>
+          <option value="1year">Last Year</option>
+        </select>
+      </div>
+
+      <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Orders Over Time</h2>
+
+      <Line data={getOrdersData(orderDateRange)} options={ordersChartOptions} />
+    </div>
+
+  </div>
+</div>
+
     </DashboardLayout>
   );
 }
 
-export default DashboardPage;
+export default FinanceOverviewPage;

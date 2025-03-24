@@ -13,10 +13,10 @@ function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[url('/bg2.jpg')] bg-cover bg-no-repeat bg-center bg-fixed"> {/* Added bg-fixed */}
+    <div className="flex h-screen w-full bg-[#FEFEFF] text-black border-gray-400">
       {/* Hamburger Menu (Mobile View) */}
       <button
-        className="absolute top-4 left-4 text-white md:hidden z-50"
+        className={`absolute top-4 left-4 md:hidden z-50 ${isSidebarOpen ? 'text-white' : 'text-black'}`}
         onClick={toggleSidebar}
       >
         <AiOutlineMenu size={24} />
@@ -24,17 +24,17 @@ function DashboardLayout({ children }) {
 
       {/* Floating Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-48 flex flex-col text-left text-white p-4 transition-transform duration-300 transform z-40 ${
+        className={`fixed top-0 left-0 h-full w-48 flex flex-col text-left transition-transform duration-300 transform z-40 ${
           isSidebarOpen
-            ? 'translate-x-0 backdrop-filter backdrop-blur-lg bg-opacity-20 bg-black'
+            ? 'translate-x-0 backdrop-filter backdrop-blur-lg bg-opacity-20 bg-black text-white' // Added text-white here
             : '-translate-x-full'
-        } md:static md:translate-x-0 md:border-r md:border-white md:bg-opacity-0`}
+        } md:static md:translate-x-0 md:border-r md:border-[#98A1AE] md:bg-opacity-0`}
       >
         <DashboardSidebar />
       </div>
 
       {/* Main Content (Header and Content) */}
-      <div className="flex-1 flex flex-col overflow-y-auto"> {/* Added overflow-y-auto */}
+      <div className="flex-1 flex flex-col overflow-y-auto">
         <div className="bg-opacity-0">
           <DashboardHeader />
         </div>
