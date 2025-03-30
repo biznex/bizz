@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Home, FileText, CreditCard, Boxes, LogOut, Banknote, ArrowLeftRight, IndianRupee, ChevronDown,Package } from 'lucide-react';
+import { Home, FileText, CreditCard, Boxes, LogOut, Banknote, ArrowLeftRight, IndianRupee, ChevronDown, Package, ChartNoAxesGantt, Users, Briefcase } from 'lucide-react';
 
 function DashboardSidebar() {
   const [showFinanceSubMenu, setShowFinanceSubMenu] = useState(false);
-  const [showInventorySubMenu, setShowInventorySubMenu] = useState(false); // New state for inventory submenu
+  const [showInventorySubMenu, setShowInventorySubMenu] = useState(false);
+  const [showEmployeesSubMenu, setShowEmployeesSubMenu] = useState(false); // New state for employees submenu
 
   return (
     <div className="flex flex-col h-full font-sans">
@@ -81,6 +82,44 @@ function DashboardSidebar() {
                   <div className="flex items-center space-x-3 p-2 rounded hover:bg-[#F0F0F0] text-inherit">
                     <Package size={18} className="shrink-0" />
                     <span>Products</span>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/inventory/categories">
+                  <div className="flex items-center space-x-3 p-2 rounded hover:bg-[#F0F0F0] text-inherit">
+                    <ChartNoAxesGantt size={18} className="shrink-0" />
+                    <span>Categories</span>
+                  </div>
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+        <li>
+          <div
+            className="flex items-center space-x-3 p-2 rounded cursor-pointer hover:bg-[#F0F0F0] text-inherit"
+            onClick={() => setShowEmployeesSubMenu(!showEmployeesSubMenu)}
+          >
+            <Users size={18} className="shrink-0" />
+            <span>Employees</span>
+            <ChevronDown size={18} className="shrink-0" />
+          </div>
+          {showEmployeesSubMenu && (
+            <ul className="pl-6">
+              <li>
+                <Link href="/dashboard/employees/staff">
+                  <div className="flex items-center space-x-3 p-2 rounded hover:bg-[#F0F0F0] text-inherit">
+                    <Users size={18} className="shrink-0" />
+                    <span>Staff</span>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/employees/joblistings">
+                  <div className="flex items-center space-x-3 p-2 rounded hover:bg-[#F0F0F0] text-inherit">
+                    <Briefcase size={18} className="shrink-0" />
+                    <span>Job Listings</span>
                   </div>
                 </Link>
               </li>
