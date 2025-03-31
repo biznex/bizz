@@ -24,6 +24,13 @@ function FinanceOverviewPage() {
           labels: ["1 AM", "4 AM", "7 AM", "10 AM", "1 PM", "4 PM", "7 PM", "10 PM"],
           datasets: [
             {
+              label: "Income",
+              data: [10, 15, 12, 18, 22, 16, 14, 20],
+              fill: false,
+              backgroundColor: "blue",
+              borderColor: "rgba(0, 0, 255, 0.5)",
+            },
+            {
               label: "Profit",
               data: [5, 12, 8, 15, 20, 14, 10, 18],
               fill: false,
@@ -39,11 +46,18 @@ function FinanceOverviewPage() {
             },
           ],
         };
-
+  
       case "7days":
         return {
           labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
           datasets: [
+            {
+              label: "Income",
+              data: [15, 20, 18, 22, 25, 21, 28],
+              fill: false,
+              backgroundColor: "blue",
+              borderColor: "rgba(0, 0, 255, 0.5)",
+            },
             {
               label: "Profit",
               data: [10, 15, 8, 12, 18, 14, 20],
@@ -60,48 +74,63 @@ function FinanceOverviewPage() {
             },
           ],
         };
-
-        case "1month":
-  return {
-    labels: Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`), // Generates labels for Day 1 to Day 30
-    datasets: [
-      {
-        label: "Profit",
-        data: [100, 120, 130, 110, 150, 160, 140, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390], // Example profit data for 30 days
-        fill: false,
-        backgroundColor: "green",
-        borderColor: "rgba(0, 255, 0, 0.5)",
-      },
-      {
-        label: "Expenses",
-        data: [80, 90, 85, 95, 100, 110, 105, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225], // Example expenses data for 30 days
-        fill: false,
-        backgroundColor: "red",
-        borderColor: "rgba(255, 0, 0, 0.5)",
-      },
-    ],
-  };   
-        case "1year":
-          return {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: [
-              {
-                label: "Profit",
-                data: [200, 300, 250, 400, 500, 450, 600, 700, 650, 750, 800, 900],
-                fill: false,
-                backgroundColor: "green",
-                borderColor: "rgba(0, 255, 0, 0.5)",
-              },
-              {
-                label: "Expenses",
-                data: [100, 150, 125, 200, 250, 225, 300, 350, 325, 375, 400, 450],
-                fill: false,
-                backgroundColor: "red",
-                borderColor: "rgba(255, 0, 0, 0.5)",
-              },
-            ],
-          };
-
+  
+      case "1month":
+        return {
+          labels: Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`),
+          datasets: [
+            {
+              label: "Income",
+              data: Array.from({ length: 30 }, () => Math.floor(Math.random() * 100) + 150),
+              fill: false,
+              backgroundColor: "blue",
+              borderColor: "rgba(0, 0, 255, 0.5)",
+            },
+            {
+              label: "Profit",
+              data: Array.from({ length: 30 }, () => Math.floor(Math.random() * 80) + 100),
+              fill: false,
+              backgroundColor: "green",
+              borderColor: "rgba(0, 255, 0, 0.5)",
+            },
+            {
+              label: "Expenses",
+              data: Array.from({ length: 30 }, () => Math.floor(Math.random() * 50) + 70),
+              fill: false,
+              backgroundColor: "red",
+              borderColor: "rgba(255, 0, 0, 0.5)",
+            },
+          ],
+        };
+  
+      case "1year":
+        return {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          datasets: [
+            {
+              label: "Income",
+              data: [300, 400, 350, 450, 550, 500, 650, 750, 700, 800, 850, 950],
+              fill: false,
+              backgroundColor: "blue",
+              borderColor: "rgba(0, 0, 255, 0.5)",
+            },
+            {
+              label: "Profit",
+              data: [200, 300, 250, 400, 500, 450, 600, 700, 650, 750, 800, 900],
+              fill: false,
+              backgroundColor: "green",
+              borderColor: "rgba(0, 255, 0, 0.5)",
+            },
+            {
+              label: "Expenses",
+              data: [100, 150, 125, 200, 250, 225, 300, 350, 325, 375, 400, 450],
+              fill: false,
+              backgroundColor: "red",
+              borderColor: "rgba(255, 0, 0, 0.5)",
+            },
+          ],
+        };
+  
       default:
         return {};
     }
@@ -268,62 +297,39 @@ function FinanceOverviewPage() {
     </div>
   </div>
 
-  {/* Graphs (2 Columns) */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    
-    {/* Profit/Expenses Graph */}
-    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-      <div className="flex justify-end mb-4">
-        <select
-          className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
-          value={profitDateRange}
-          onChange={(e) => setProfitDateRange(e.target.value)}
-        >
-          <option value="24hours">Last 24 Hours</option>
-          <option value="7days">Last Week</option>
-          <option value="1month">Last Month</option>
-          <option value="1year">Last Year</option>
-        </select>
-      </div>
-
-      <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Profit & Expenses Over Time</h2>
-
-      <Line
-        data={getChartData(profitDateRange)}
-        options={{
-          ...chartOptions,
-          elements: { line: { tension: 0.4 } },
-        }}
-        dataset={{
-          fill: true,
-          backgroundColor: 'rgba(0, 123, 255, 0.2)',
-          borderColor: 'rgba(0, 123, 255, 0.5)',
-          pointBackgroundColor: 'blue',
-        }}
-      />
-    </div>
-
-    {/* Orders Graph */}
-    <div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4">
-      <div className="flex justify-end mb-4">
-        <select
-          className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
-          value={orderDateRange}
-          onChange={(e) => setOrderDateRange(e.target.value)}
-        >
-          <option value="24hours">Last 24 Hours</option>
-          <option value="7days">Last Week</option>
-          <option value="1month">Last Month</option>
-          <option value="1year">Last Year</option>
-        </select>
-      </div>
-
-      <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Orders Over Time</h2>
-
-      <Line data={getOrdersData(orderDateRange)} options={ordersChartOptions} />
-    </div>
-
+  {/* Single Full Width Graph */}
+<div className="bg-opacity-0 border border-[#2F2F2F] rounded-xl p-4 mt-4"> 
+  <div className="flex justify-end mb-4">
+    <select
+      className="bg-white text-[#2F2F2F] border border-[#2F2F2F] p-2 rounded-md"
+      value={profitDateRange}
+      onChange={(e) => setProfitDateRange(e.target.value)}
+    >
+      <option value="24hours">Last 24 Hours</option>
+      <option value="7days">Last Week</option>
+      <option value="1month">Last Month</option>
+      <option value="1year">Last Year</option>
+    </select>
   </div>
+
+  <h2 className="text-lg font-semibold text-[#2F2F2F] mb-4">Profit & Expenses Over Time</h2>
+
+  <div style={{ height: '60vh' }}> {/* Added height style */}
+    <Line
+      data={getChartData(profitDateRange)}
+      options={{
+        ...chartOptions,
+        elements: { line: { tension: 0.4 } },
+      }}
+      dataset={{
+        fill: true,
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        borderColor: 'rgba(0, 123, 255, 0.5)',
+        pointBackgroundColor: 'blue',
+      }}
+    />
+  </div>
+</div>
 </div>
 
     </DashboardLayout>
