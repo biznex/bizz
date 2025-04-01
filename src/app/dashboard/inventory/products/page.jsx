@@ -2,47 +2,27 @@
 
 import React, { useState } from 'react';
 import DashboardLayout from '../../components/dashboardlayout';
+import Barcode from 'react-barcode'; 
 
 function InventoryPage() {
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [showUpdateStockForm, setShowUpdateStockForm] = useState(false);
-  const [filter, setFilter] = useState('all'); // 'all', 'active', 'non-active', 'low-stock'
+  const [filter, setFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([
+    { id: 1, name: 'Laptop', status: 'active', stock: 100, category: 'Electronics', sku: '12345678', unitPrice: 25.00 },
+    { id: 2, name: 'Product B', status: 'inactive', stock: 0, category: 'Clothing', sku: '87654321', unitPrice: 15.00 },
+    { id: 3, name: 'Product C', status: 'active', stock: 5, category: 'Books', sku: '11223344', unitPrice: 10.00 },
+    { id: 4, name: 'Product D', status: 'active', stock: 200, category: 'Electronics', sku: '55667788', unitPrice: 30.00 },
+    { id: 5, name: 'Product E', status: 'inactive', stock: 0, category: 'Home', sku: '99001122', unitPrice: 20.00 },
+  ]);
   const itemsPerPage = 20;
-
-  const products = [
-    { id: 1, name: 'Product A', status: 'active', stock: 100, category: 'Electronics' },
-    { id: 2, name: 'Product B', status: 'inactive', stock: 0, category: 'Clothing' },
-    { id: 3, name: 'Product C', status: 'active', stock: 5, category: 'Books' },
-    { id: 4, name: 'Product D', status: 'active', stock: 200, category: 'Electronics' },
-    { id: 5, name: 'Product E', status: 'inactive', stock: 0, category: 'Home' },
-    { id: 6, name: 'Product F', status: 'active', stock: 10, category: 'Books' },
-    { id: 7, name: 'Product G', status: 'inactive', stock: 3, category: 'Clothing' },
-    { id: 8, name: 'Product H', status: 'active', stock: 150, category: 'Electronics' },
-    { id: 9, name: 'Product I', status: 'inactive', stock: 0, category: 'Home' },
-    { id: 10, name: 'Product J', status: 'active', stock: 25, category: 'Books' },
-    { id: 11, name: 'Product K', status: 'inactive', stock: 1, category: 'Clothing' },
-    { id: 12, name: 'Product L', status: 'active', stock: 300, category: 'Electronics' },
-    { id: 13, name: 'Product M', status: 'inactive', stock: 0, category: 'Home' },
-    { id: 14, name: 'Product N', status: 'active', stock: 30, category: 'Books' },
-    { id: 15, name: 'Product O', status: 'inactive', stock: 2, category: 'Clothing' },
-    { id: 16, name: 'Product P', status: 'active', stock: 180, category: 'Electronics' },
-    { id: 17, name: 'Product Q', status: 'inactive', stock: 0, category: 'Home' },
-    { id: 18, name: 'Product R', status: 'active', stock: 35, category: 'Books' },
-    { id: 19, name: 'Product S', status: 'inactive', stock: 4, category: 'Clothing' },
-    { id: 20, name: 'Product T', status: 'active', stock: 220, category: 'Electronics' },
-    { id: 21, name: 'Product U', status: 'inactive', stock: 0, category: 'Home' },
-    { id: 22, name: 'Product V', status: 'active', stock: 40, category: 'Books' },
-    { id: 23, name: 'Product W', status: 'inactive', stock: 5, category: 'Clothing' },
-    { id: 24, name: 'Product X', status: 'active', stock: 250, category: 'Electronics' },
-    { id: 25, name: 'Product Y', status: 'inactive', stock: 0, category: 'Home' },
-  ];
 
   const filteredProducts = products.filter((product) => {
     if (filter === 'all') return true;
     if (filter === 'active') return product.status === 'active';
     if (filter === 'non-active') return product.status === 'inactive';
-    if (filter === 'low-stock') return product.stock <= 10; // Assuming low stock is 10 or less
+    if (filter === 'low-stock') return product.stock <= 10;
     return true;
   });
 
@@ -59,72 +39,153 @@ function InventoryPage() {
     setCurrentPage(pageNumber);
   };
 
+  const categories = [...new Set(products.map(product => product.category))];
+
+  const generateUniqueSku = () => {
+    let newSku;
+    do {
+      newSku = String(Math.floor(10000000 + Math.random() * 90000000));
+    } while (products.some(p => p.sku === newSku));
+    return newSku;
+  };
+
+  const handleAddProduct = (newProduct) => {
+    setProducts([...products, { ...newProduct, id: products.length + 1, sku: generateUniqueSku() }]);
+    setShowAddProductForm(false);
+  };
+
+  const handleUpdateStock = (updatedProduct) => {
+    const updatedProducts = products.map(p => p.id === updatedProduct.id ? updatedProduct : p);
+    setProducts(updatedProducts);
+    setShowUpdateStockForm(false);
+  };
+
+  // New state for the update form
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState([]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value) {
+      const options = products.filter(product => product.name.toLowerCase().includes(value.toLowerCase()));
+      setFilteredOptions(options);
+    } else {
+      setFilteredOptions([]);
+    }
+  };
+
+  const handleSelectProduct = (product) => {
+    setSearchTerm(product.name);
+    setFilteredOptions([]);
+  };
+
   return (
     <DashboardLayout>
       <div className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Bento Boxes */}
           <div className="bg-white border border-black rounded-xl p-4">
             <div className="text-left">
               <h2 className="text-lg font-semibold mb-4 text-black">Product Types</h2>
-              <p>50</p>
+              <p>{categories.length}</p>
             </div>
           </div>
           <div className="bg-white border border-black rounded-xl p-4">
             <div className="text-left">
               <h2 className="text-lg font-semibold mb-4 text-black">Total Products</h2>
-              <p>227</p>
+              <p>{products.length}</p>
             </div>
           </div>
           <div className="bg-white border border-black rounded-xl p-4">
             <div className="text-left">
               <h2 className="text-lg font-semibold mb-4 text-black">Low Stock Products</h2>
-              <p>20</p>
+              <p>{products.filter(p => p.stock <= 10).length}</p>
             </div>
           </div>
           <div className="bg-white border border-black rounded-xl p-4">
             <div className="text-left">
               <h2 className="text-lg font-semibold mb-4 text-black">Total Inventory Value</h2>
-              <p>₹ 5,97,263.00</p>
+              <p>₹ {products.reduce((acc, p) => acc + (p.stock * p.unitPrice), 0).toFixed(2)}</p>
             </div>
           </div>
-
-          {/* Buttons */}
           <div className="bg-blue-500 text-white border border-black rounded-xl p-4 cursor-pointer" onClick={() => setShowAddProductForm(!showAddProductForm)}>Add Product</div>
           <div className="bg-blue-500 text-white border border-black rounded-xl p-4 cursor-pointer" onClick={() => setShowUpdateStockForm(!showUpdateStockForm)}>Update Stock/Product Details</div>
           <div className="bg-blue-500 text-white border border-black rounded-xl p-4">Export PDF</div>
           <div className="bg-blue-500 text-white border border-black rounded-xl p-4">Export Low Stock PDF</div>
-
-          {/* Forms */}
           {showAddProductForm && (
             <div className="bg-white border border-black rounded-xl p-4 col-span-1">
               <h2 className="text-lg font-semibold mb-4 text-center">Add Product</h2>
-              <input type="text" placeholder="Product Name" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
-              <input type="text" placeholder="Category" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <input type="number" placeholder="Stock Quantity" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <input type="text" placeholder="SKU" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <input type="number" placeholder="Unit Price" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <button className="w-full p-2 bg-blue-500 text-white rounded" onClick={() => setShowAddProductForm(false)}>Submit</button>
-              <button className="w-full p-2 bg-gray-300 text-black rounded mt-2" onClick={() => setShowAddProductForm(false)}>Cancel</button>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                handleAddProduct({
+                  name: e.target.productName.value,
+                  category: e.target.category.value,
+                  stock: parseInt(e.target.stockQuantity.value),
+                  unitPrice: parseFloat(e.target.unitPrice.value),
+                  status: 'active',
+                });
+              }}>
+                <input type="text" name="productName" placeholder="Product Name" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
+                <select name="category" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }}>
+                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+                <input type="number" name="stockQuantity" placeholder="Stock Quantity" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
+                <input type="number" name="unitPrice" placeholder="Unit Price" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
+                <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">Submit</button>
+                <button type="button" className="w-full p-2 bg-gray-300 text-black rounded mt-2" onClick={() => setShowAddProductForm(false)}>Cancel</button>
+              </form>
             </div>
           )}
-
-{showUpdateStockForm && (
+          {showUpdateStockForm && (
             <div className="bg-white border border-black rounded-xl p-4 col-span-1">
               <h2 className="text-lg font-semibold mb-4 text-center">Update Stock/Product Details</h2>
-              <input type="text" placeholder="Product ID/Name" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <input type="number" placeholder="New Stock Quantity" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <input type="text" placeholder="Reason for Update" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100% )' }} />
-              <input type="date" placeholder="Update Date" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
-              <button className="w-full p-2 bg-blue-500 text-white rounded" onClick={() => setShowUpdateStockForm(false)}>Submit</button>
-              <button className="w-full p-2 bg-gray-300 text-black rounded mt-2" onClick={() => setShowUpdateStockForm(false)}>Cancel</button>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const productId = products.find(p => p.name === searchTerm || p.id === parseInt(searchTerm))?.id;
+                if (productId) {
+                  handleUpdateStock({
+                    id: productId,
+                    name: searchTerm,
+                    stock: parseInt(e.target.newStockQuantity.value),
+                    category: e.target.category.value,
+                  });
+                }
+              }}>
+                <input 
+                  type="text" 
+                  name="productName" 
+                  placeholder="Product ID/Name" 
+                  value={searchTerm} 
+                  onChange={handleSearchChange} 
+                  className="w-full mx-auto p-2 border rounded mb-2 text-center" 
+                  style={{ width: 'calc(100%)' }} 
+                />
+                {filteredOptions.length > 0 && (
+                  <ul className="border border-gray-300 rounded bg-white absolute z-10">
+                    {filteredOptions.map(product => (
+                      <li 
+                        key={product.id} 
+                        className="p-2 cursor-pointer hover:bg-gray-200" 
+                        onClick={() => handleSelectProduct(product)}
+                      >
+                        {product.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <input type="number" name="newStockQuantity" placeholder="New Stock Quantity" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
+                <input type="text" name="reasonForUpdate" placeholder="Reason for Update" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
+                <input type="date" name="updateDate" placeholder="Update Date" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }} />
+                <select name="category" className="w-full mx-auto p-2 border rounded mb-2 text-center" style={{ width: 'calc(100%)' }}>
+                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+                <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">Submit</button>
+                <button type="button" className="w-full p-2 bg-gray-300 text-black rounded mt-2" onClick={() => setShowUpdateStockForm(false)}>Cancel</button>
+              </form>
             </div>
           )}
         </div>
-
-        {/* Product Table Bento Box with Filter */}
         <div className="mt-4 bg-white border border-black rounded-xl p-4">
-          {/* Filter System inside Bento Box */}
           <div className="flex space-x-2 mb-4 justify-around">
             <button className={`p-2 border rounded ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-white'}`} style={{ width: '20%' }} onClick={() => setFilter('all')}>All</button>
             <button className={`p-2 border rounded ${filter === 'active' ? 'bg-blue-500 text-white' : 'bg-white'}`} style={{ width: '20%' }} onClick={() => setFilter('active')}>Active</button>
@@ -137,7 +198,6 @@ function InventoryPage() {
               &gt;
             </button>
           </div>
-
           <h2 className="text-lg font-semibold mb-4 text-center">Products</h2>
           <table className="w-full border-collapse border border-slate-800">
             <thead>
@@ -146,6 +206,9 @@ function InventoryPage() {
                 <th className="text-center border border-slate-800 p-2">Status</th>
                 <th className="text-center border border-slate-800 p-2">Stock</th>
                 <th className="text-center border border-slate-800 p-2">Category</th>
+                <th className="text-center border border-slate-800 p-2">SKU</th>
+                <th className="text-center border border-slate-800 p-2">Unit Price</th>
+                <th className="text-center border border-slate-800 p-2">Barcode</th>
               </tr>
             </thead>
             <tbody>
@@ -167,12 +230,15 @@ function InventoryPage() {
                     )}
                   </td>
                   <td className="py-2 border border-slate-800 p-2 text-left">{product.category}</td>
+                  <td className="py-2 border border-slate-800 p-2 text-left">{product.sku}</td>
+                  <td className="py-2 border border-slate-800 p-2 text-left">₹ {product.unitPrice.toFixed(2)}</td>
+                  <td className="py-2 border border-slate-800 p-2 text-left">
+                    <Barcode value={product.sku} height={30} />
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-
-          {/* Pagination below table */}
           <div className="flex justify-center mt-4">
             <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} className="p-2 border rounded">
               &lt;

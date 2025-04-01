@@ -3,8 +3,16 @@
 import { useState, useEffect } from "react";
 import { X, ArrowLeft } from "lucide-react"; 
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+
+
+
 
 export default function Page() {
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+  const [showCompleteProfile, setShowCompleteProfile] = useState(false); // Add this state
   const [showBusinessLogin, setShowBusinessLogin] = useState(false);
   const [showAspirantLogin, setShowAspirantLogin] = useState(false);
   const [showBusinessRegister, setShowBusinessRegister] = useState(false);
@@ -16,6 +24,9 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
+
+  
+
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,55 +55,52 @@ const [confirmPassword, setConfirmPassword] = useState("");
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState("");*/
 
+const [aspirantEmail, setAspirantEmail] = useState("");
+const [aspirantPassword, setAspirantPassword] = useState("");
+const [aspirantLoading, setAspirantLoading] = useState(false);
+const [aspirantError, setAspirantError] = useState("");
 
-
-const handleRegister = async () => {
-  if (!isEmailOtpVerified || !isPhoneOtpVerified) {
-    setError("Please verify your email and phone first.");
-    return;
-  }
-
-  if (password.length<8){
-    setError("Password should be atleast 8 characters")
-  }
-  if (password !== confirmPassword) {
-    setError("Passwords do not match.");
-    return;
-  }
-
-  setLoading(true);
-  setError("");
-
-  try {
-    const response = await fetch('https://yourapi.com/register', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, phone, password }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      // Redirect to a different page upon successful registration
-      window.location.href = '/success-page';
-    } else {
-      setError(data.message || "Registration failed.");
-    }
-  } catch (error) {
-    setError("An error occurred. Please try again.");
-  } finally {
-    setLoading(false);
-  }
+const data = {
+  email,
+  phone,
+  password,
 };
+
+
+
+
+
+  const handleRegister = async () => {
+    if (!isEmailOtpVerified || !isPhoneOtpVerified) {
+      setError("Please verify your email and phone first.");
+      return;
+    }
+  
+    if (password.length<8){
+      setError("Password should be atleast 8 characters")
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    
+    
+    setShowModal(true);
+    const queryParams = new URLSearchParams({ email, password, phone }).toString();
+    router.push(`../complete-profile-business?${queryParams}`);
+    
+    
+  };
+ 
+
+
   //Business login api fetch
   const handleLogin = async () => {
     setLoading(true);
     setError(""); // Clear previous errors
   
     try {
-      const response = await fetch('https://biznex.onrender.com/login/job-user/login-job-user', {
+      const response = await fetch('https://biznex.onrender.com/login/client/login-client', {
         method: 'POST',
         credentials: 'include' ,
         headers: {
@@ -106,9 +114,11 @@ const handleRegister = async () => {
   
       if (response.ok) {
         const data = await response.json();
-        console.log(data); // Log the response to the console
-        alert("Login Successful!"); // Notify the user
-        // Optionally, redirect or perform other actions here
+        console.log(data);
+         // Log the response to the console
+        alert("Login Successful!");
+        localStorage.setItem('token', data.token); // Notify the user
+        router.push("../dashboard"); // Redirect to the complete profile page
       } else {
         const errorData = await response.json();
         setError(errorData.message || "Login failed"); // Display error message
@@ -159,18 +169,19 @@ const handleRegister = async () => {
     setError("");
   
     try {
-      const response = await fetch('https://biznex.onrender.com/signup/client/send-email-otp', {
-        method: 'POST',
-        credentials: "include",
+      const response = await fetch("https://biznex.onrender.com/signup/client/send-email-otp", {
+        method: "POST",
+        credentials: "include", // ✅ Ensure it matches backend CORS
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
-      console.log(data);
   
-      const data = await response.json();
-      if (response.ok && data.message === "Email OTP sent successfully.") {
+      const data = await response.json(); // ✅ Fix order of console log
+      console.log(data); // ✅ Now prints { message: "Email sent successfully" }
+  
+      if (response.ok) {
         setIsEmailVerified(true);
       } else {
         setError(data.message || "Failed to send OTP.");
@@ -181,28 +192,31 @@ const handleRegister = async () => {
       setLoading(false);
     }
   };
+  
+  
 
   const handleVerifyEmailOtp = async () => {
     setLoading(true);
     setError("");
   
     try {
-      const response = await fetch('https://biznex.onrender.com/signup/client/verify-email-otp', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp: emailOtp }),
+      const response = await fetch("https://biznex.onrender.com/signup/client/verify-email-otp", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email , emailOtp }), // ✅ Pass the OTP
       });
-  
+
       const data = await response.json();
-      if (response.ok && data.message === 'Email verified successfully.') {
-        setIsEmailOtpVerified(true);
+      console.log(data);
+
+      if (response.ok) {
+        setIsEmailOtpVerified(true); // ✅ Show OTP section
       } else {
-        setError(data.message || "Failed to verify OTP.");
+        setError(data.message || "Failed to send OTP.");
       }
     } catch (error) {
+      console.error("Error sending email OTP:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -220,10 +234,11 @@ const handleRegister = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ phone }),
+      body: JSON.stringify({ email , phone }),
     });
 
     const data = await response.json();
+    console.log(data);
     if (response.ok && data.message === 'Phone OTP sent successfully.') {
       setIsPhoneVerified(true);
     } else {
@@ -247,10 +262,11 @@ const handleVerifyPhoneOtp = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ phone, otp: phoneOtp }),
+      body: JSON.stringify({ email, phoneOtp }),
     });
 
     const data = await response.json();
+    console.log(data);
     if (response.ok && data.message === 'Phone verified successfully.') {
       setIsPhoneOtpVerified(true);
     } else {
@@ -260,6 +276,38 @@ const handleVerifyPhoneOtp = async () => {
     setError("An error occurred. Please try again.");
   } finally {
     setLoading(false);
+  }
+};
+
+const handleAspirantLogin = async () => {
+  setAspirantLoading(true);
+  setAspirantError(""); // Clear previous errors
+
+  try {
+    const response = await fetch('https://yourapi.com/login/aspirant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: aspirantEmail,
+        password: aspirantPassword,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      // Handle successful login, e.g., store token and redirect
+      console.log("Login successful:", data);
+      // Redirect to the aspirant dashboard or home page
+      window.location.href = '/aspirant-dashboard';
+    } else {
+      setAspirantError(data.message || "Login failed");
+    }
+  } catch (error) {
+    setAspirantError("An unexpected error occurred. Please try again later.");
+  } finally {
+    setAspirantLoading(false);
   }
 };
 
@@ -448,7 +496,7 @@ const handleVerifyPhoneOtp = async () => {
     </div>
 
     {/* OTP Field for Email */}
-    {showEmailOtpField && isEmailVerified && (
+    {showEmailOtpField  && isEmailVerified && (
       <div className="relative w-full mt-2">
         <input
           type="text"
@@ -484,7 +532,11 @@ const handleVerifyPhoneOtp = async () => {
       />
       <button
         className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-transparent text-[#F16517] text-sm cursor-pointer px-3 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-        onClick={handleVerifyPhone}
+        
+        onClick={() => {
+          setShowNumberOtpField(true);
+          handleVerifyPhone(); // ✅ Now properly executes
+        }}
         disabled={isPhoneVerified || loading}
       >
         { isPhoneVerified ? "✔ Verified" : "Verify PhNo"}
@@ -494,7 +546,7 @@ const handleVerifyPhoneOtp = async () => {
     )}
 
     {/* OTP Field for Phone Number */}
-    {showNumberOtpField && !isPhoneVerified && (
+    {showNumberOtpField && isPhoneVerified && (
       <div className="relative w-full mt-2 flex items-center">
         <input
           type="text"
@@ -567,9 +619,22 @@ const handleVerifyPhoneOtp = async () => {
         className="w-full mt-4 px-4 py-2 bg-[#F16517] text-white text-sm rounded-md hover:bg-[#d14b10] transition"
         onClick={handleRegister}
       >
-        Register
+        Complete Business Profile
       </button>
 
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+          <div className="relative w-96 md:w-[450px] lg:w-[500px] p-4 rounded-lg border border-gray-300 bg-opacity-80 backdrop-blur-md">
+            {/* You'll need to load the content of complete-business-profile here */}
+            {/* or make a fetch request to the route */}
+            <p>Content of complete-business-profile goes here</p>
+            <button onClick={() => {
+              setShowModal(false);
+              router.back()
+            }}>Close</button>
+          </div>
+        </div>
+      )}
       {/* Sign in with Google */}
       {/*<div className="mt-3 text-center">
         <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-black text-sm rounded-md hover:bg-gray-200 transition">
