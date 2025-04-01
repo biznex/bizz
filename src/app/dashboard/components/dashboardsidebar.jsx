@@ -1,5 +1,3 @@
-// src/app/dashboard/components/dashboardsidebar.jsx
-
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Home, FileText, CreditCard, Boxes, LogOut, Banknote, ArrowLeftRight, IndianRupee, ChevronDown, Package, ChartNoAxesGantt, Users, Briefcase } from 'lucide-react';
@@ -7,7 +5,8 @@ import { Home, FileText, CreditCard, Boxes, LogOut, Banknote, ArrowLeftRight, In
 function DashboardSidebar() {
   const [showFinanceSubMenu, setShowFinanceSubMenu] = useState(false);
   const [showInventorySubMenu, setShowInventorySubMenu] = useState(false);
-  const [showEmployeesSubMenu, setShowEmployeesSubMenu] = useState(false); // New state for employees submenu
+  const [showEmployeesSubMenu, setShowEmployeesSubMenu] = useState(false);
+  const [showBillingSubMenu, setShowBillingSubMenu] = useState(false); // New state for Billing submenu
 
   return (
     <div className="flex flex-col h-full font-sans">
@@ -120,6 +119,28 @@ function DashboardSidebar() {
                   <div className="flex items-center space-x-3 p-2 rounded hover:bg-[#F0F0F0] text-inherit">
                     <Briefcase size={18} className="shrink-0" />
                     <span>Job Listings</span>
+                  </div>
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+        <li>
+          <div
+            className="flex items-center space-x-3 p-2 rounded cursor-pointer hover:bg-[#F0F0F0] text-inherit"
+            onClick={() => setShowBillingSubMenu(!showBillingSubMenu)}
+          >
+            <FileText size={18} className="shrink-0" />
+            <span>Billing</span>
+            <ChevronDown size={18} className="shrink-0" />
+          </div>
+          {showBillingSubMenu && (
+            <ul className="pl-6">
+              <li>
+                <Link href="/dashboard/billing/createinvoice">
+                  <div className="flex items-center space-x-3 p-2 rounded hover:bg-[#F0F0F0] text-inherit">
+                    <FileText size={18} className="shrink-0" />
+                    <span>Create Invoice</span>
                   </div>
                 </Link>
               </li>
